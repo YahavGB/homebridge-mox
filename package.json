@@ -1,0 +1,28 @@
+{
+  "name": "homebridge-mox",
+  "version": "0.0.1",
+  "description": "MOX Platform plugin for homebridge",
+  "license": "MIT",
+  "keywords": [
+    "homebridge-plugin",
+    "homebridge",
+    "plugin",
+    "mox",
+    "mox-smarthome",
+    "home",
+    "smarthome",
+    "homekit",
+    "siri"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/yahavgb/homebridge-mox.git"
+  },
+  "bugs": {
+    "url": "http://github.com/yahavgb/homebridge-mox/issues"
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
+  }
+}
