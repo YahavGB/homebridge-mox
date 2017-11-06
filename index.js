@@ -1,12 +1,12 @@
 'use strict';
 
-var DEFAULT_IP_ADDRESS = "172.16.254.254";
-var DEFAULT_PORT_NUMBER = 6670;
+const DEFAULT_IP_ADDRESS = "172.16.254.254";
+const DEFAULT_PORT_NUMBER = 6670;
 
-var request     = require("request");
-var async       = require("async");
-var moxUtils    = require('./mox-utils.js');
-var MoxLtClient = require('./mox-client.js');
+const request     = require("request");
+const async       = require("async");
+const moxUtils    = require('./mox-utils.js');
+const MoxLtClient = require('./mox-client.js');
 var Service, Characteristic, Accessory, uuid;
 
 var MoxAccessory;
@@ -30,7 +30,7 @@ module.exports = function(homebridge) {
     //--------------------------------------------------
     //  Setup the MOX accessories
     //--------------------------------------------------
-
+    
     /* Load */
     MoxAccessory        = require('./accessories/accessory.js')(Service, Characteristic, Accessory, uuid);
     MoxLightAccessory   = require('./accessories/light-accessory.js')(Service, Characteristic, MoxAccessory, uuid);
@@ -48,9 +48,14 @@ module.exports = function(homebridge) {
     //--------------------------------------------------
     //  Register ourselfs with homebridge
     //--------------------------------------------------
-
+    
     homebridge.registerPlatform("homebridge-mox", "Mox", MoxPlatform);
 };
+
+//==========================================================================================
+//  Helpers
+//==========================================================================================
+
 
 //==========================================================================================
 //  Mox Platform
@@ -72,7 +77,7 @@ function MoxPlatform(log, config) {
     //--------------------------------------------------
     //  iVars setup
     //--------------------------------------------------
-
+    
     /* Client IP */
     if (typeof(config.client_ip_address) == "undefined") {
         throw new Error('You must specify the client IP address in your config file.');
@@ -106,18 +111,23 @@ MoxPlatform.prototype.accessories = function(callback) {
     this.client = new MoxLtClient(this.clientIpAddress, this.clientPortNumber,
                 this.serverIpAddress, this.serverPortNumber);
 
-    this.client.connect(function() {
-        this.log.info('Mox LT Client is listening via UDP on ' + this.client.socket.address().address + ":" + this.client.socket.address().port + '...');
+    this.client.on('connect', function() {
+        this.log.info('Mox LT Client is listening via UDP on ' + this.client._socket.address().address + ":" + this.client._socket.address().port + '...');
 
         this.log.info("Registering the accessories list...");
         this.foundAccessories = []; /* reset */
 
-        for (var accessoryData of this.config.accessories) {
-            var accessory = this.accessoryFactory(accessoryData);
-            if (accessory) {
-                this.foundAccessories.push(accessory);
-            } else {
-                this.log.error("Ignoring unknown accessory (type: %s).", accessoryData.type);
+        for (var entry of this.config.entries) {
+            /* Each entry is a room with set of accessories.
+            In HomeKit we can't seed the rooms, unfortunatly, so we'll just get the accessories */
+            
+            for (var accessoryData of entry.accessories) {
+                var accessory = this.accessoryFactory(accessoryData);
+                if (accessory) {
+                    this.foundAccessories.push(accessory);
+                } else {
+                    this.log.error("Ignoring unknown accessory (type: %s).", accessoryData.type);
+                }
             }
         }
 
@@ -125,6 +135,8 @@ MoxPlatform.prototype.accessories = function(callback) {
             return (a.name > b.name) - (a.name < b.name);
         }));
     }.bind(this));
+    
+    this.client.connect();
 };
 
 MoxPlatform.prototype.accessoryFactory = function(entry) {

@@ -42,11 +42,12 @@ function MoxAccessory(platform, accessoryData)
     this.accessoryData  =   accessoryData;
     this.log            =   platform.log;
 
-    this.id             =   this.accessoryData.module_id.substring(2, 8) + "-" + parseInt(accessoryData.channel_id, 16);
+    this.id             =   moxUtils.uuidForAccessory(this.accessoryData.module_id, this.accessoryData.channel_id);
     this.name           =   this.accessoryData.name;
     this.type           =   typeof(this.accessoryData.type) != "undefined" ? this.accessoryData.type : undefined;
     this.moduleId       =   moxUtils.parseModuleId(this.accessoryData.module_id);
     this.channelId      =   parseInt(this.accessoryData.channel_id, 16);
+    this.statusTimeout  =   500;
 
     //--------------------------------------------------
     //  Fire our parent

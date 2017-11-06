@@ -1,18 +1,10 @@
 {
   "name": "homebridge-mox",
-  "version": "0.0.1",
-  "description": "MOX Platform plugin for homebridge",
-  "license": "MIT",
+  "version": "0.0.3",
+  "description": "MOX Platform plugin for homebridge: https://github.com/nfarina/homebridge",
+  "license": "ISC",
   "keywords": [
-    "homebridge-plugin",
-    "homebridge",
-    "plugin",
-    "mox",
-    "mox-smarthome",
-    "home",
-    "smarthome",
-    "homekit",
-    "siri"
+    "homebridge-plugin"
   ],
   "repository": {
     "type": "git",
@@ -24,5 +16,10 @@
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
+  },
+  "dependencies": {
+    "async": "^2.5.0",
+    "debug": "^3.0.1",
+    "request": "^2.81.0"
   }
 }
